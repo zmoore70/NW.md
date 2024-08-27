@@ -291,3 +291,15 @@ Windows command to view records: ipconfig /displaydns
         >& - redirect to a file descriptor.
             2>&1 | grep "open" - redirect STDERR(2) to STDOUT(1) the redirect the output to the command "grep"
 
+## BPFs at the Data-Link layer
+```
+    Search for the destination broadcast MAC address.
+
+'ether[0:4] = 0xffffffff && ether[4:2] = 0xffff'
+'ether[0:2] = 0xffff && ether[2:2]= 0xffff && ether[4:2] = 0xffff'
+
+    Search for the source MAC address of fa:16:3e:f0:ca:fc.
+
+'ether[6:4] = 0xfa163ef0 && ether[10:2] = 0xcafc'
+'ether[6:2] = 0xfa16 && ether[8:2] = 0x3ef0 && ether[10:2] = 0xcafc'
+```
