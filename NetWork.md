@@ -303,3 +303,26 @@ Windows command to view records: ipconfig /displaydns
 'ether[6:4] = 0xfa163ef0 && ether[10:2] = 0xcafc'
 'ether[6:2] = 0xfa16 && ether[8:2] = 0x3ef0 && ether[10:2] = 0xcafc'
 ```
+##     Search for unicast (0x00) or multicast (0x01) MAC address.
+```
+'ether[0] & 0x01 = 0x00'
+'ether[0] & 0x01 = 0x01'
+'ether[6] & 0x01 = 0x00'
+'ether[6] & 0x01 = 0x01'
+```
+## Search for IPv4, ARP, VLAN Tag, and IPv6 respectively.
+```
+ether[12:2] = 0x0800
+ether[12:2] = 0x0806
+ether[12:2] = 0x8100
+ether[12:2] = 0x86dd
+```
+##     Search for 802.1Q VLAN 100.
+```
+'ether[12:2] = 0x8100 && ether[14:2] & 0x0fff = 0x0064'
+'ether[12:4] & 0xffff0fff = 0x81000064'
+```
+## Search for double VLAN Tag.
+```
+'ether[12:2] = 0x8100 && ether[16:2] = 0x8100'
+```
