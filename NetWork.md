@@ -326,3 +326,14 @@ ether[12:2] = 0x86dd
 ```
 'ether[12:2] = 0x8100 && ether[16:2] = 0x8100'
 ```
+## Search for ONLY the RES flag set. DF and MF must be off.
+```
+'ip[6] & 0xE0 = 0x80'
+'ip[6] & 224 = 128'
+```
+## Search for RES bit set. The other 2 flags are ignored so they can be on or off.
+```
+'ip[6] & 0x80 = 0x80'
+'ip[6] & 128 = 128'
+```
+
