@@ -338,4 +338,17 @@ ether[12:2] = 0x86dd
 'ip[6] & 128 = 128'
 ```
 # Day 2
-```
+
+# Hex Encoding and Decoding
+
+## Encode text to Hex:
+
+echo "Message" | xxd
+
+## Encode file to Hex:
+
+xxd file.txt file-encoded.txt
+
+## Decode file from Hex:
+
+xxd -r file-encoded.txt file-decoded.txt
