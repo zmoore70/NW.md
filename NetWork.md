@@ -342,13 +342,31 @@ ether[12:2] = 0x86dd
 # Hex Encoding and Decoding
 
 ## Encode text to Hex:
-
+```
 echo "Message" | xxd
-
+```
 ## Encode file to Hex:
-
+```
 xxd file.txt file-encoded.txt
-
+```
 ## Decode file from Hex:
-
+```
 xxd -r file-encoded.txt file-decoded.txt
+```
+# Base64 Encoding and Decoding
+
+## Encode text to base64:
+```
+echo "Message" | base64
+```
+## Endode file to Base64:
+```
+base64 file.txt > file-encoded.txt
+```
+## Decode file from Base64:
+```
+base64 -d file-encoded.txt > file-decoded.txt
+```
+# md5sum
+```
+echo "Message" | md5sum
