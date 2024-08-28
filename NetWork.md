@@ -41,8 +41,10 @@ Restart the SSH Service
 
     systemctl restart ssh
 ```
-
-## 3.4.4.2 Explain DNS Records
+## Day 1
+```
+```
+# 3.4.4.2 Explain DNS Records
 ```
 A DNS servers contains a "zone file" for each domain, and the zone file is made up of "resource records" (RRs) which acts as instructions for the DNS server.
 
