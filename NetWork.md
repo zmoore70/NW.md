@@ -370,3 +370,282 @@ base64 -d file-encoded.txt > file-decoded.txt
 # md5sum
 ```
 echo "Message" | md5sum
+```
+# DAY 3
+## Good Sites
+```
+http://whois.domaintools.com/
+https://centralops.net/co/
+https://urlscan.io/
+https://web-check.xyz/
+https://iplocation.io/
+https://bgpview.io/
+duckduckgo
+https://app.diagrams.net/
+```
+# Commands for Passive Recon
+## WHOIS
+```
+whois zonetransfer.me
+```
+## Dig
+```
+dig zonetransfer.me A
+dig zonetransfer.me AAAA
+dig zonetransfer.me MX
+dig zonetransfer.me TXT
+dig zonetransfer.me NS
+dig zonetransfer.me SOA
+```
+## Zone Transfer
+```
+Between Primary and Secondary DNS over TCP port 53
+
+https://digi.ninja/projects/zonetransferme.php
+
+dir axfr {@soa.server} {target-site}
+dig axfr @nsztm1.digi.ninja zonetransfer.me
+```
+## Historical Content
+```
+    Wayback Machine
+
+    http://archive.org/web/
+```
+# p0f: Passive scanning of network traffic and packet captures.
+```
+more /etc/p0f/p0f.fp
+
+sudo p0f -i eth0
+
+sudo p0f -r test.pcap - READ PCAPS
+```
+# Commands
+## Ping
+```
+Ping one IP:
+ping 172.16.82.106 -c 1
+
+Ping a range:
+for i in {1..254}; do (ping -c 1 172.16.82.$i | grep "bytes from" &) ; done
+```
+## NMAP Defaults
+```
+Default Scan:
+
+User: TCP Full Connect Scan (-sT)
+
+Root: TCP SYN Scan (-sS)
+
+Default Ports scanned: 1000 most commonly used TCP or UDP ports
+```
+## NMAP Options
+```
+    Broadcast Ping/Ping sweep (-sP, -PE)
+    SYN scan (-sS)
+    Full connect scan (-sT)
+    Null scan (-sN)
+    FIN scan (-sF)
+    XMAS tree scan (-sX)
+    UDP scan (-sU)
+    Idle scan (-sI)
+    Decoy scan (-D)
+    ACK/Window scan (-sA)
+    RPC scan (-sR)
+    FTP scan (-b)
+    OS fingerprinting scan (-O)
+    Version scan (-sV)
+    Discovery probes
+    -PE - ICMP Ping
+    -Pn - No Ping *Required during tunneling
+```
+## recon
+Passive OS Fingerprinter (p0f)
+
+    Examine packets sent to/from target
+
+    Can guess Operating Systems and version
+
+    Can guess client/server application and version
+
+Social Tactics
+
+    Social Engineering (Hack a person)
+
+    Technical based (Email/SMS/Bluetooth)
+
+    Other Types (Dumpster Diving/Shoulder Surf)
+
+NMAP - Rate Limit
+
+    --min-rate <number> - Minimum packets per second
+
+    --max-rate <number> - Max packets per second
+
+Traceroute - Firewalking
+
+traceroute 172.16.82.106
+traceroute 172.16.82.106 -p 123
+sudo traceroute 172.16.82.106 -I
+sudo traceroute 172.16.82.106 -T
+sudo traceroute 172.16.82.106 -T -p 443
+
+Netcat - Scanning
+
+nc [Options] [Target IP] [Target Port(s)]
+
+    -z : Port scanning mode i.e. zero I/O mode
+
+    -v : Be verbose [use twice -vv to be more verbose]
+
+    -n : do not resolve ip addresses
+
+    -w1 : Set time out value to 1
+
+    -u : To switch to UDP
+  
+  Netcat - Banner Grabbing
+
+  Find what is running on a particular port
+
+nc [Target IP] [Target Port]
+nc 172.16.82.106 22
+nc -u 172.16.82.106 53
+
+    -u : To switch to UDP
+
+  ## CURL AND WGET
+  ```
+        Both can be used to interact with the HTTP, HTTPS and FTP protocols.
+
+    Curl - Displays ASCII
+
+curl http://172.16.82.106
+curl ftp://172.16.82.106
+
+    Wget - Downloads (-r recursive)
+
+wget -r http://172.16.82.106
+wget -r ftp://172.16.82.106
+
+if ssh or http are unavailable use ftp
+ftp 172.16.82.106 - log in through FTP server. after logging in as student must go into passive mode "passive" to get files from ftp server must do "get [filename]"
+```
+## IP Configuration
+```
+Windows: ipconfig /all
+Linux: ip address (ifconfig depreciated)
+VyOS: show interface
+```
+## DNS configuration
+```
+Windows: ipconfig /displaydns
+Linux: cat /etc/resolv.conf
+```
+## ARP Cache
+```
+Windows: arp -a
+Linux: ip neighbor (arp -a depreciated)
+```
+## Network connections
+
+Windows: netstat
+Linux: ss (netstat depreciated) (atlp)
+```
+Example options useful for both netstat and ss: -antp
+a = Displays all active connections and ports.
+n = No determination of protocol names. Shows 22 not SSH.
+t = Display only TCP connections.
+u = Display only UDP connections.
+p = Shows which processes are using which sockets.
+```
+Windows: C:\Windows\System32\OpenSSH\sshd_config
+Linux: /etc/ssh/sshd_config
+
+find / -iname hint* 2> /dev/null
+find / -iname flag* 2> /dev/null
+
+## Routing Table
+
+Windows: route print
+Linux: ip route (netstat -r deprecated)
+VyOS: show ip route
+
+ARP Scanning
+
+arp-scan --interface=eth0 --localnet
+
+# METHODOLOGY
+
+Host discovery
+  Ruby ping sweep(if ping available)
+    *script*
+  nmap scan if no ping (check scan methodology)
+port Discovery
+  nmap (check scan methodology)
+  nc scan script
+Port validation
+  banner grab using nc [ipaddr] [port]
+follow-on actions based on ports found
+  if 21 or 80 wget -r [ip addr] (or) wget -r ftp://[ip addr] (or) firefox
+  if 22 or 23 CONNECT amd PASSIVE RECON
+  if no 22 or 23 and you NEED to GET ON the box and you have port 21
+    FTP [ipaddr] connects to FTP server
+      passive
+      ls
+      get [file name]
+
+Scan Methodology
+  nmap -Pn [IP] -T4 -p 21-23,80
+  quick scan ports 21-23,80
+  specific ports based on hints/clues found 
+  well known port range
+  which tcpdump wireshark nmap telnet get curl ping
+
+  0-1023
+  Chunks of 2000 or first 10000 ports 
+  Hail Mary - Scan all of the ports
+
+  Passive recon:
+hostname
+  permissions:
+    sudo -l
+interfaces and subnets
+    ip a
+    show interface{VyOS}
+neighbors
+    ip neigh
+Routing table
+    ip route 
+    show ip route
+files  of interest
+  find / -iname flag*
+  find / -iname hint*
+other listening ports
+  ss -ntlp
+available tools
+  which tcpdump wireshark nmap telnet get curl ping
+
+
+  net2_student13@red-internet-host:~$ nc -u 172.16.182.110 1984
+head
+
+What Linux command should an administrator use to determine the full file path of the dig executable?
+^C
+net2_student13@red-internet-host:~$ nc -u 172.16.182.110 1989
+get
+
+Which command should an administrator use to view the IP address and CIDR notation of a Linux system running a version after Ubuntu 18.04? (full command)
+^C
+net2_student13@red-internet-host:~$ 
+
+net2_student13@red-internet-host:~$ nc -u 172.16.140.33 2000
+get
+
+How many IPv4 prefixes are assigned to the Autonomous system that the Defense Technical Information Center (dtic.mil) assigned to?
+^C
+net2_student13@red-internet-host:~$ nc -u 172.16.140.33 2011
+get
+
+What is the DNS admin email for steampowered.com?
+^C
