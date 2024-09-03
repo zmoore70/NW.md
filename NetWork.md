@@ -626,26 +626,45 @@ other listening ports
 available tools
   which tcpdump wireshark nmap telnet get curl ping
 
+# SCP
 
-  net2_student13@red-internet-host:~$ nc -u 172.16.182.110 1984
-head
+## SCP Options
+```
+.  - Present working directory
+-v - verbose mode
+-P - alternate port
+-r - recursively copy an entire directory
+-3 - 3-way copy
+```
 
-What Linux command should an administrator use to determine the full file path of the dig executable?
-^C
-net2_student13@red-internet-host:~$ nc -u 172.16.182.110 1989
-get
+## SCP Syntax
+```
+Download a file from a remote directory to a local directory
+$ scp student@172.16.82.106:secretstuff.txt /home/student
 
-Which command should an administrator use to view the IP address and CIDR notation of a Linux system running a version after Ubuntu 18.04? (full command)
-^C
-net2_student13@red-internet-host:~$ 
+Upload a file to a remote directory from a local directory
+$ scp secretstuff.txt student@172.16.82.106:/home/student
 
-net2_student13@red-internet-host:~$ nc -u 172.16.140.33 2000
-get
+Copy a file from a remote host to a separate remote host
+$ scp -3 student@172.16.82.106:/home/student/secretstuff.txt student@172.16.82.112:/home/student
+password:    password:
+```
+## SCP Syntax For Folders
+```
+Recursive upload of a folder to remote
+$ scp -r folder/ student@172.16.82.106:
 
-How many IPv4 prefixes are assigned to the Autonomous system that the Defense Technical Information Center (dtic.mil) assigned to?
-^C
-net2_student13@red-internet-host:~$ nc -u 172.16.140.33 2011
-get
+Recursive download of a folder from remote
+$ scp -r student@172.16.82.106:folder/ .
+```
+## SCP Syntax through a tunnel
+```
+Create a local port forward to target device
+$ ssh student@172.16.82.106 -L 1111:localhost:22 -NT
 
-What is the DNS admin email for steampowered.com?
-^C
+Download a file from a remote directory to a local directory
+$ scp -P 1111 student@localhost:secretstuff.txt /home/student
+
+Upload a file to a remote directory from a local directory
+$ scp -P 1111 secretstuff.txt student@localhost:/home/student
+```
