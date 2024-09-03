@@ -668,3 +668,13 @@ $ scp -P 1111 student@localhost:secretstuff.txt /home/student
 Upload a file to a remote directory from a local directory
 $ scp -P 1111 secretstuff.txt student@localhost:/home/student
 ```
+## SSH Options
+```
+-L - Creates a port on the client mapped to a ip:port via the server     (LOCAL)
+
+-D - Creates a port on the client and sets up a SOCKS4 proxy tunnel where the target ip:port is specified dynamically    (DYNAMIC)
+
+-R - Creates the port on the server mapped to a ip:port via the client      (REMOTE)
+
+-NT - Do not execute a remote command and disable pseudo-tty (will hang window)
+```
