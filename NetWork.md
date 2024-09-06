@@ -678,3 +678,27 @@ $ scp -P 1111 secretstuff.txt student@localhost:/home/student
 
 -NT - Do not execute a remote command and disable pseudo-tty (will hang window)
 ```
+
+![image](https://github.com/user-attachments/assets/a0e80886-c58c-40a4-a305-e4a841811853)
+
+## Reverse examples
+```
+student@blue-internet-host-student-13:~$ ssh net2_student13@10.50.38.13 -p 1234 -L 21301:172.17.17.28:23 -NT --> (ssh to "Bender" and creates a local tunnel on BIH to go to "Philips" telnet) 
+
+student@blue-internet-host-student-13:~$ telnet localhost 21301 (Telnet to the local fowarder to get onto Philips system)
+
+net2_student13@philip:~$ ssh net2_student13@172.17.17.17 -p 1234 -R 21399:localhost:4321 -NT (ssh to "Benders" ssh port opening remote port 21399 to go to "Philips" ssh port)
+
+student@blue-internet-host-student-13:~$ ssh net2_student13@10.50.38.13 -p 1234 -L 21302:localhost:21399 -NT (***COMBINING THE TUNNELS***)(ssh from BIH to "Bender" making a local fowarder on BIH to go to the 21399  on "Bender" which goes to "Philip" ssh port
+
+student@blue-internet-host-student-13:~$ ssh net2_student13@localhost -p 21302 -L 21303:192.168.30.150:1212 -NT (ssh to local fowarder going to "Leela" ssh port)
+
+student@blue-internet-host-student-13:~$ ssh net2_student13@localhost -p 21303 -L 21304:10.10.12.121:2932 -NT (ssh to new local fowarder going to "Professors" ssh port while on target run commands to see high port then exit)
+
+student@blue-internet-host-student-13:~$ ssh net2_student13@localhost -p 21304 (ssh to new 
+
+student@blue-internet-host-student-13:~$ ssh net2_student13@localhost -p 21304 -D 9050 -NT ( Creates a dynamic tunnel onto "Professor" then in new terminal run proxychains nc localhost *[port]* to view message on high port) 
+
+
+
+
