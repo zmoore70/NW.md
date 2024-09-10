@@ -699,6 +699,116 @@ student@blue-internet-host-student-13:~$ ssh net2_student13@localhost -p 21304 (
 
 student@blue-internet-host-student-13:~$ ssh net2_student13@localhost -p 21304 -D 9050 -NT ( Creates a dynamic tunnel onto "Professor" then in new terminal run proxychains nc localhost *[port]* to view message on high port) 
 
+```
+# iptables syntax
 
+## iptables -t [table] [options] [chain] [rules] -j [action]
 
+## -t [table] can be filter(default), nat, mangle, raw or security
 
+## Common iptable [options]:
+```
+-A, --append - Append a rule. Rule will be created at the end of the list or below the rule number you specify.
+-I, --insert - Insert a rule. Rule will be created at the top of the list or above the rule number you specify.
+-R, --replace - Replace a rule. The rule number your specify will be replaced with this rule.
+-D, --delete - Delete a rule. The rule number you specify will be deleted.
+-F, --flush - Flush the table of all rules.
+-L, --list - List all rules in the specified table.
+-S, --list-rules - Prints the rules in the specified table.
+-P, --policy - Set the policy for the chain.
+-n, --numeric - IP addresses and port numbers will be printed in numeric format.
+-L --line-numbers - When listing rules, add line numbers to the beginning of each rule, corresponding to that rule's position in the chain.
+```
+## [chain] - Can be PREROUTING, INPUT, FORWARD, OUTPUT, or POSTROUTING
+
+## [rules]
+```
+-i [iface] - Specifies the input interface
+-o [iface] - Specifies the output interface
+-s [ip.add | network/mask] - Specifies the source IP
+-d [ip.add | network/mask] - Specifies the destination IP
+-p [tcp | udp | icmp] - Specifies the protocol.
+-p [tcp | udp] --sport [port | port1:port2] - Specifies the source port(s). Can be one port or one range.
+-p [tcp | udp] --dport [port | port1:port2] - Specifies the destination port(s). Can be one port or one range.
+-p icmp --icmp-type type# { /code# }  - Specifies specific icmp types and codes
+-p tcp --tcp-flags SYN,ACK,PSH,RST,FIN,URG,ALL,NONE  - Specifies specific one or more TCP flags to filter on.
+
+-m is used to call functions from iptables extensions:
+-m state --state [state] - Enables stateful packet tracking. States can be NEW,ESTABLISHED,RELATED,UNTRACKED,INVALID
+-m conntrack --ctstate [state] - Enables stateful packet tracking. States can be NEW,ESTABLISHED,RELATED,UNTRACKED,INVALID
+-m mac --mac-source [mac]
+       --mac-destination [mac]
+-m multiport -p [tcp | udp] --sports [port1,port2,..port15] - Specifies the source port(s). Can be one port, one range, or
+                                                             comma delimited.
+                            --dports [port1,port2,..port15] - Specifies the destination port(s). Can be one port, one range, or
+                                                             comma delimited.
+                            --ports [port1,port2,..port15]  - Specifies the port(s). Can be one port, one range, or comma delimited.
+                                                             Ports imply source or destination.
+-m bpf --bytecode "bytecode" - Specify a Berkeley Packet Filter (BPF) bytecode filter as a matching criteria for filtering
+                               network packets.
+-m iprange --src-range { ip1-ip2 } - Specifies a range of source IPs.
+           --dst-range { ip1-ip2 } - Specifies a range of destination IPs.
+
+-j [action] - ACCEPT, REJECT, or DROP
+```
+# NFTables rule examples
+
+  ## Creating a table
+```
+  nft add table ip CCTC
+```
+  ## Creating chains
+```
+    nft add chain ip CCTC INPUT { type filterhook input priority 0 \; policy accept \;}
+    nft add chain ip CCTC OUTPUT { type filter hook output priority 0 \; policy accept \;}
+
+    Specify an interface
+
+    nft add rule ip CCTC INPUT iif eth0 accept
+    nft add rule ip CCTC OUTPUT oif eth1 accept
+
+    Specify an IP address
+
+    nft add rule ip CCTC INPUT ip saddr 10.10.0.40 accept
+    nft add rule ip CCTC OUTPUT ip daddr 10.10.0.40 accept
+
+    Specify a network
+
+    nft add rule ip CCTC INPUT ip saddr 10.10.0.32/27 accept
+    nft add rule ip CCTC OUTPUT ip daddr 10.10.0.32/27 accept
+
+    Specify a TCP ports as a server
+
+    nft add rule ip CCTC INPUT tcp dport { 21-23, 80, 3389 } accept
+    nft add rule ip CCTC OUTPUT tcp sport { 21-23, 80, 3389 } accept
+
+    Specify a TCP ports as a client
+
+    nft add rule ip CCTC OUTPUT tcp dport { 21-23, 80, 3389 } accept
+    nft add rule ip CCTC INPUT tcp sport { 21-23, 80, 3389 } accept
+
+    Specify a UDP ports as a server
+
+    nft add rule ip CCTC INPUT udp dport { 53, 67-69 } accept
+    nft add rule ip CCTC OUTPUT udp sport { 53, 67-69 } accept
+
+    Specify a UDP ports as a client
+
+    nft add rule ip CCTC OUTPUT udp dport { 53, 67-69 } accept
+    nft add rule ip CCTC INPUT udp sport { 53, 67-69 } accept
+
+    Specify inbound ICMP
+
+    nft add rule ip CCTC INPUT icmp type 8 accept
+    nft add rule ip CCTC OUTPUT icmp type 0 accept
+
+    Specify outboud ICMP
+
+    nft add rule ip CCTC OUTPUT icmp type 8 accept
+    nft add rule ip CCTC INPUT icmp type 0 accept
+
+    Specify TCP states
+
+    nft add rule ip CCTC INPUT tcp dport { 21-23, 80, 3389 } ct state { new, established } accept
+    nft add rule ip CCTC OUTPUT tcp sport { 21-23, 80, 3389 } ct state { new, established }  accept
+```
