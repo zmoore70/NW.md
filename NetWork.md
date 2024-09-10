@@ -1057,6 +1057,37 @@ A Snort header is composed of:
 
         any - When icmp protocol is used then "any" must still be used as a place holder.
 ```
+ ## Snort IDS/IPS General rule options:
+```
+    msg - specifies the human-readable alert message. This only adds the message to the alert file.
+
+        msg:"Put this message in the log";
+
+    reference - links to external source of the rule. This just adds references to the attack the rule is filtering for.
+
+        reference:cve,CAN-2000-1574;
+
+    sid - used to uniquely identify Snort rules. This is required and all rules must have a unique sid.
+
+        sid:123456;
+
+    rev - uniquely identify revisions of Snort rules. This is purely for the administrator.
+
+        rev: 1.1;
+
+    Classtype - used to categorize a rule as detecting an attack that is part of a more general type of attack class. Classtypes must be defined before they can be used.
+
+        classtype:attempted-recon;
+
+    priority - assigns a severity level to rules (1 - really bad, 2 - badish, 3 - informational).
+
+        priority:10;
+
+    metadata - allows a rule writer to embed additional information about the rule.
+
+        metadata:engine shared,service http;
+```
+
 
 
 
