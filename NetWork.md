@@ -812,3 +812,251 @@ student@blue-internet-host-student-13:~$ ssh net2_student13@localhost -p 21304 -
     nft add rule ip CCTC INPUT tcp dport { 21-23, 80, 3389 } ct state { new, established } accept
     nft add rule ip CCTC OUTPUT tcp sport { 21-23, 80, 3389 } ct state { new, established }  accept
 ```
+# NETWORK
+## prompt for standard acl configuration mode              action                source IP address            source wildcard
+```
+router(config)#                                    permit or deny            IP address or "any"          range from 0.0.0.0 to 255.255.255.255
+                                                                                                          0.0.0.0 = host = exact match
+                                                                                                          0.255.255.255 = IP address/8
+                                                                                                          omit if source IP address is "any"
+```
+## Standard Numbered ACL Syntax
+```
+router(config)# access-list {1-99 | 1300-1999}  {permit|deny}  {source IP add}
+               {source wildcard mask}
+
+router(config)# access-list 10 permit host 10.0.0.1
+
+router(config)# access-list 10 deny 10.0.0.0 0.255.255.255
+
+router(config)# access-list 10 permit any
+```
+## Standard Named ACL Syntax
+```
+router(config)# ip access-list standard [name]
+
+router(config-std-nacl)# {permit | deny}  {source ip add}  {source wildcard mask}
+
+router(config)# ip access-list standard CCTC-STD
+
+router(config-std-nacl)# permit host 10.0.0.1
+
+router(config-std-nacl)# deny 10.0.0.0 0.255.255.255
+
+router(config-std-nacl)# permit any
+```
+# Create access control entries for extended ACLs
+```
+action          Layer 3/4 protocol                  Source IP Address                  Source wildcard                                [operator] [port]
+
+permit or deny      tcp/udp/icmp                    IP address or "any"           range from 0.0.0.0 to 255.255.255.255                lt - less than
+                                                                                  0.0.0.0 = host = exact match                         gt - greater than
+                                                                                  0.255.255.255 = IP address/8                         (n)eq - (not) equal
+                                                                                  omit if source IP address is "any"                    icmp-type (and code)
+
+
+
+Destination IP Address                      Destination wildcard                      [operator] [port]                              [Options]
+
+IP address or "any"                  range from 0.0.0.0 to 255.255.255.255
+                                    0.0.0.0 = host = exact match
+                                    0.255.255.255 = IP address/8
+                                    omit if source IP address is "any"
+	
+
+lt - less than
+gt - greater than
+(n)eq - (not) equal
+range - of ports
+icmp-type (and code)
+	
+
+including:
+established
+fragments
+log(-input)
+time-range
+ttl
+match-any
+match-all
+```
+## Extended Numbered ACL Syntax
+```
+router(config)# access-list {100-199 | 2000-2699} {permit | deny} {protocol}
+               {source IP add & wildcard} {operand: eq|lt|gt|neq}
+               {port# |protocol} {dest IP add & wildcard} {operand: eq|lt|gt|neq}
+               {port# |protocol}
+
+router(config)# access-list 144 permit tcp host 10.0.0.0.1 any eq 22
+
+router(config)# access-list 144 deny tcp 10.0.0.0 0.255.255.255 any eq 23
+
+router(config)# access-list 144 permit icmp 10.0.0.0 0.255.255.255 192.168.0.0
+               0.0.255.255 echo
+
+router(config)# access-list 144 deny icmp 10.0.0.0 0.255.255.255 192.168.0.0
+               0.0.255.255 echo echo-reply
+
+router(config)# access-list 144 permit ip any any
+```
+## Extended Named ACL Syntax
+```
+router(config)# ip access-list extended  [name]
+
+router(config-ext-nacl)# [sequence number] {permit | deny} {protocol}
+                        {source IP add & wildcard} {operand: eq|lt|gt|neq}
+                        {port# |protocol} {dest IP add & wildcard} {operand:
+                        eq|lt|gt|neq} {port# |protocol}
+
+router(config)# ip access-list extended CCTC-EXT
+
+router(config-ext-nacl)# permit tcp host 10.0.0.0.1 any eq 22
+
+router(config-ext-nacl)# deny tcp 10.0.0.0 0.255.255.255 any eq 23
+
+router(config-ext-nacl)# permit icmp 10.0.0.0 0.255.255.255 192.168.0.0
+                        0.0.255.255 echo
+
+router(config-ext-nacl)# deny icmp 10.0.0.0 0.255.255.255 192.168.0.0
+                        0.0.255.255 echo echo-reply
+
+router(config-ext-nacl)# permit ip any any
+```
+# Snort Basics
+## Snort Installation directory
+```
+        /etc/snort
+```
+  ## Snort Configuration file. Configuration files are used to define one or more rule files for packet matching. It uses the command include /path/name.rules to add rules to the configuration file. Several configuration files can be created for different Snort instances. Use the -c config-file to specify the configuration file or rule.
+```
+        /etc/snort/snort.conf
+```
+ ##   Snort rules directory. Rule files can be created anywhere but this is the default location.
+```
+        /etc/snort/rules
+```
+##    Snort rule files. The functionality of Snort relies on its rules. They can be download from Snort or can be user-defined. Generally, they are given the .rules extension to identify them as rule files but are not required.
+```
+        [name].rules
+```
+ ##   Snort Log directory. If not otherwise specified, all alerts and logs are created here. Other locations can be specified using the -l log-file.
+```
+        /var/log/snort
+```
+   ## Common Snort command line switches
+```
+        -D - Runs snort in Daemon mode
+
+        -l log-dir - to specify the location where Snort should create its logs. If not specified then the default is /var/log/snort
+
+        -c config-file - to specify a configuration or rule file that Snort should use for packet matching.
+
+        -r pcap-file - to specify a pcap file for Snort to read.
+
+        -p - Turn off promiscuous mode sniffing.
+
+        -e - Display/log the link-layer packet headers.
+
+        -i interface - Specify the interface for the Snort Daemon to sniff on.
+
+        -V - Show the version number and exit.
+```
+  ##  To run snort as a Daemon
+```
+        sudo snort -D -c /etc/snort/snort.conf -l /var/log/snort
+```
+  ##  To run snort against a PCAP
+```
+        sudo snort -c /etc/snort/rules/file.rules -r file.pcap
+```
+# Snort IDS/IPS rule - header
+Snort rules consist of a header which sets the conditions for the rule to work and rule options (a rule body) which provides the actual rule (matching criteria and action).
+## [action] [protocol] [source ip] [source port] [direction] [destination ip] [destination port] ( match conditions ;)
+
+A Snort header is composed of:
+```
+    Action - such as alert, log, pass, drop, reject
+
+        alert - generate alert and log packet
+
+        log - log packet only
+
+        pass - ignore the packet
+
+        drop - block and log packet
+
+        reject - block and log packet and send TCP message (for TCP traffic) or ICMP message (for UDP traffic)
+
+        sdrop - silent drop - block packet only (no logging)
+
+    Protocol
+
+        tcp
+
+        udp
+
+        icmp
+
+        ip
+
+    Source IP address
+
+        a specific address (i.e. 192.168.1.1 )
+
+        a CIDR notation (i.e. 192.168.1.0/24 )
+
+        a range of addresses (i.e. [192.168.1.1-192.168.1.10] )
+
+        multiple addresses (i.e. [192.138.1.1,192.168.1.10] )
+
+        variable addresses (i.e. $EXTERNALNET ) (must be defined to be used)
+
+        "any" IP address
+
+    Source Port
+
+        one port (i.e. 22 )
+
+        multiple ports (i.e. [22,23,80] )
+
+        a range of ports (i.e. 1:1024 = 1 to 1024, :1024 = less than or equal to 1024, 1024: = greater than or equal to 1024)
+
+        variable ports (i.e. $EXTERNALPORTS) (must be defined to be used)
+
+        any - When icmp protocol is used then "any" must still be used as a place holder.
+
+    Direction
+
+        source to destination ( - > )
+
+        either direction ( <> )
+
+    Destination IP address
+
+        a specific address (i.e. 192.168.1.1 )
+
+        a CIDR notation (i.e. 192.168.1.0/24 )
+
+        a range of addresses (i.e. [192.168.1.1-192.168.1.10] )
+
+        multiple addresses (i.e. [192.138.1.1,192.168.1.10] )
+
+        variable addresses (i.e. $EXTERNALNET ) (must be defined to be used)
+
+        "any" IP address
+
+    Destination port
+
+        one port (i.e. 22 )
+
+        multiple ports (i.e. [22,23,80] )
+
+        a range of ports (i.e. 1:1024 = 1 to 1024, :1024 = less than or equal to 1024, 1024: = greater than or equal to 1024)
+
+        variable ports (i.e. $INTERNALPORTS) (must be defined to be used)
+
+        any - When icmp protocol is used then "any" must still be used as a place holder.
+```
+
+
+
