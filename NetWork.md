@@ -28,10 +28,9 @@ ssh-keygen -f "/home/student/.ssh/known_hosts" -R "172.16.82.106"
 
 # TCPdump
 
--A - Prints the frame payload in ASCII.                                                                                                                     - tcpdump -A
+-A - Prints the frame payload in ASCII.                                                                                                                      - tcpdump -A
 
--D - Print the list of the network interfaces available on the system and on which TCPDump can capture packets. For each network interface, a number and an interface name, followed by a text description of the interface, is printed. This can be used to identify which interfaces are available for traffic capture.
-
+-D - Print the list of the network interfaces available on the system and on which TCPDump can capture packets. For each network interface, a number and an interface name, followed by a text description of the interface, is printed. This can be used to identify which interfaces are available for traffic capture.                                                                                  
                                                                                                                                                              - tcpdump -D
 
 -i - Normally, eth0 will be selected by default if you do not specify an interface. However, if a different interface is needed, it must be specified.       - tcpdump -i eth0
