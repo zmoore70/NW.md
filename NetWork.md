@@ -28,28 +28,28 @@ ssh-keygen -f "/home/student/.ssh/known_hosts" -R "172.16.82.106"
 
 # TCPdump
 
--A - Prints the frame payload in ASCII. - tcpdump -A
+-A - Prints the frame payload in ASCII.                                                                                                                     - tcpdump -A
 
 -D - Print the list of the network interfaces available on the system and on which TCPDump can capture packets. For each network interface, a number and an interface name, followed by a text description of the interface, is printed. This can be used to identify which interfaces are available for traffic capture.
 
-tcpdump -D
+                                                                                                                                                             - tcpdump -D
 
--i - Normally, eth0 will be selected by default if you do not specify an interface. However, if a different interface is needed, it must be specified. - tcpdump -i eth0
-
-
--e - Prints Data-Link Headers. Default is to print the encapsulated protocol only. - tcpdump -e
-
--X - displays packet data in HEX and ASCII. - tcpdump -i eth0 -X
--XX - displays the packet data in HEX and ASCII to include the Ethernet portion. - tcpdump -i eth0 -XX
+-i - Normally, eth0 will be selected by default if you do not specify an interface. However, if a different interface is needed, it must be specified.       - tcpdump -i eth0
 
 
--w - writes the capture to an output file - tcpdump -w something.pcap
+-e - Prints Data-Link Headers. Default is to print the encapsulated protocol only.                                                                           - tcpdump -e
 
--r - reads from the pcap - tcpdump -r something.pcap
+-X - displays packet data in HEX and ASCII.                                                                                                                  - tcpdump -i eth0 -X
+-XX - displays the packet data in HEX and ASCII to include the Ethernet portion.                                                                             - tcpdump -i eth0 -XX
 
--v - gives more verbose output with details on the time to live, IPID, total length, options, and flags. Additionally, it enables integrity checking. -   tcpdump -vv
 
--n - Does not covert protocol and addresses to names -  tcpdump -n
+-w - writes the capture to an output file                                                                                                                    - tcpdump -w something.pcap
+
+-r - reads from the pcap                                                                                                                                     - tcpdump -r something.pcap
+
+-v - gives more verbose output with details on the time to live, IPID, total length, options, and flags. Additionally, it enables integrity checking.        - tcpdump -vv
+
+-n - Does not covert protocol and addresses to names                                                                                                         -  tcpdump -n
 
 
 ## tcpdump for specific protocol traffic of more than one type.
