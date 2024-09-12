@@ -579,51 +579,93 @@ arp-scan --interface=eth0 --localnet
 
 Host discovery
   Ruby ping sweep(if ping available)
+    
     *script*
+  
   nmap scan if no ping (check scan methodology)
+
 port Discovery
+  
   nmap (check scan methodology)
+  
   nc scan script
+
 Port validation
+  
   banner grab using nc [ipaddr] [port]
+
 follow-on actions based on ports found
+  
   if 21 or 80 wget -r [ip addr] (or) wget -r ftp://[ip addr] (or) firefox
+  
   if 22 or 23 CONNECT amd PASSIVE RECON
+  
   if no 22 or 23 and you NEED to GET ON the box and you have port 21
+    
     FTP [ipaddr] connects to FTP server
+      
       passive
+      
       ls
+      
       get [file name]
 
+
 Scan Methodology
+  
   nmap -Pn [IP] -T4 -p 21-23,80
+  
   quick scan ports 21-23,80
+  
   specific ports based on hints/clues found 
+  
   well known port range
+  
   which tcpdump wireshark nmap telnet get curl ping
 
+  
   0-1023
+  
   Chunks of 2000 or first 10000 ports 
+  
   Hail Mary - Scan all of the ports
 
   Passive recon:
+
 hostname
+  
   permissions:
+    
     sudo -l
+
 interfaces and subnets
+    
     ip a
+    
     show interface{VyOS}
+
 neighbors
+    
     ip neigh
+
 Routing table
+    
     ip route 
+    
     show ip route
+
 files  of interest
+  
   find / -iname flag*
+  
   find / -iname hint*
+
 other listening ports
+  
   ss -ntlp
+
 available tools
+  
   which tcpdump wireshark nmap telnet get curl ping
 
 # SCP
